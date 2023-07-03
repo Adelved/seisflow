@@ -4,7 +4,7 @@ let ypos = [];
 let canvasHeight;
 let canvasWidth;
 let dipfield;
-let num = 10000;
+let num = 7000;
 
 let stride = 1;
 
@@ -36,7 +36,7 @@ class PointClass {
       this.y = p.y
 
       this.startTime = millis(); // Start time of the object's existence
-      this.lifetime = 3000; // Lifetime duration in milliseconds
+      this.lifetime = 100; // Lifetime duration in milliseconds
       
     }
   
@@ -45,30 +45,31 @@ class PointClass {
         let deltaTime = currentTime - this.startTime;
 
         
-
         this.x_prev = this.x
         this.y_prev = this.y
-
 
         this.x =  this.x - cos(a);
         this.y = this.y + sin(a);
 
-        if (Math.abs(this.x - this.x_prev) < .01 || Math.abs(this.y - this.y_prev) < 0.01){
-            this.x = random(this.width)
-            this.y = random(this.height)
+        if (Math.abs(this.x - this.x_prev) < .01 || Math.abs(this.y - this.y_prev) < .01){
+            
+          this.x = random(this.width)
+          this.y = random(this.height)
 
-        }
-    
+      }
+
         
-        /* Check if the object's lifetime has expired
+
+        /*
         if (deltaTime >= this.lifetime) {
-            this.x = random(this.width)
-            this.y = random(this.height)
+          
+
 
             this.startTime = millis(); // Start time of the object's existence
-            this.lifetime = 3000; // Lifetime duration in milliseconds
+            this.lifetime = 100; // Lifetime duration in milliseconds
         }
         */
+        
       }
     
   }
@@ -145,7 +146,7 @@ function draw() {
         setTimeout(draw, 10);
         return;
     }
-    background(0,5);
+    background(0,4);
     for(let i = 0; i < num; i++) {
 
         let p = particles[i];
