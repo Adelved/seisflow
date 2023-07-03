@@ -4,7 +4,7 @@ let ypos = [];
 let canvasHeight;
 let canvasWidth;
 let dipfield;
-let num = 7000;
+let num = 5000;
 
 let stride = 1;
 
@@ -102,7 +102,10 @@ Promise.all([promise1, promise2])
     
     
     canvasHeight = formatedResponses[0].height
+
     canvasWidth = formatedResponses[0].width
+    
+    
     console.log(canvasHeight,canvasWidth)
     
     dipfield = new Float32Array(formatedResponses[1])
@@ -128,8 +131,10 @@ function setup() {
         return;
       }
     setupFlag=true;
-    
+    const density = 5;
     createCanvas(canvasWidth, canvasHeight);
+    console.log(density)
+    pixelDensity(density);
     for(let i = 0; i < num; i ++) {
         let particle = new PointClass(createVector(random(canvasWidth), random(canvasHeight)), canvasWidth, canvasHeight)
         particles.push(particle);
