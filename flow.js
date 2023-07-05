@@ -10,7 +10,10 @@ let stride = 1;
 
 
 dataLoaded = false;
+
 let setupFlag=false;
+let normflag = false;
+
 
 function getIndex(row, column, numColumns) {
     return row * numColumns + column;
@@ -48,8 +51,13 @@ class PointClass {
         this.x_prev = this.x
         this.y_prev = this.y
 
-        this.x =  this.x - cos(a);
-        this.y = this.y + sin(a);
+        let new_a = a
+        if (normflag){
+          new_a = Math.abs(a);
+        }
+
+        this.x =  this.x - cos(new_a);
+        this.y = this.y + sin(new_a);
 
         if (Math.abs(this.x - this.x_prev) < .01 || Math.abs(this.y - this.y_prev) < .01){
             
@@ -175,3 +183,19 @@ function draw() {
 function onScreen(v) {
     return v.x >= 0 && v.x <= width && v.y >= 0 && v.y <= height;
   }
+
+
+// Access the button element
+const buttonOrig = document.getElementById('buttonOrig');
+const buttonNorm = document.getElementById('buttonNorm');
+
+// Add an event listener to the button
+buttonOrig.addEventListener('click', function() {
+  normflag = false;
+  draw();
+});
+
+buttonNorm.addEventListener('click', function() {
+  normflag = true;
+  draw();
+});
