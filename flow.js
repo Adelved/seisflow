@@ -4,6 +4,8 @@ let ypos = [];
 let canvasHeight;
 let canvasWidth;
 let dipfield;
+
+
 let num = 5000;
 
 let stride = 1;
@@ -52,12 +54,18 @@ class PointClass {
         this.y_prev = this.y
 
         let new_a = a
+        
         if (normflag){
-          new_a = Math.abs(a);
+          
+          this.x =  this.x - cos(new_a);
+          this.y = this.y + Math.abs(sin(new_a));
+
+        }else{
+          this.x =  this.x - cos(new_a);
+          this.y = this.y + sin(new_a);
         }
 
-        this.x =  this.x - cos(new_a);
-        this.y = this.y + sin(new_a);
+        
 
         if (Math.abs(this.x - this.x_prev) < .01 || Math.abs(this.y - this.y_prev) < .01){
             
@@ -159,7 +167,7 @@ function draw() {
         setTimeout(draw, 10);
         return;
     }
-    background(0,4);
+    background(0,10);
     for(let i = 0; i < num; i++) {
 
         let p = particles[i];
@@ -192,10 +200,32 @@ const buttonNorm = document.getElementById('buttonNorm');
 // Add an event listener to the button
 buttonOrig.addEventListener('click', function() {
   normflag = false;
+  buttonOrig.style.backgroundColor = "gray";
+  buttonNorm.style.backgroundColor = "#f0f0f0";
+  
+  setup();
   draw();
 });
 
 buttonNorm.addEventListener('click', function() {
   normflag = true;
+  buttonOrig.style.backgroundColor = "#f0f0f0";
+  buttonNorm.style.backgroundColor = "gray";
+
+  setup();
   draw();
+});
+
+
+const slider = document.getElementById("slider");
+const sliderValue = document.getElementById("sliderValue");
+
+slider.addEventListener("input", function() {
+
+  const selectedNotch = slider.value * 1000;
+  num = selectedNotch
+  setup();
+  draw();
+
+  sliderValue.textContent = `Num Particles: ${selectedNotch}`;
 });

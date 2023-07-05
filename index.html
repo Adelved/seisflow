@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="stylesheet.css">
   <title>Particle System</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <style>
@@ -16,6 +17,13 @@
   
   <button id="buttonOrig">Original Flow</button>
   <button id="buttonNorm">Normalized Flow</button>
+
+  <div>
+    <input type="range" min="1" max= "10" value="1" id="slider">
+    <div id="sliderValue">Num Particles: 1000</div>
+  </div>
+
+  
 
   <script src="flow.js"></script>
 </body>
