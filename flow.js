@@ -16,6 +16,15 @@ dataLoaded = false;
 let setupFlag=false;
 let normflag = false;
 
+function normalizeAngle(angle) {
+  angle += Math.PI
+  return angle % (2 * Math.PI)
+}
+
+function normalizeAngleRight(angle) {
+  angle += Math.PI
+  return angle % (Math.PI)
+}
 
 function getIndex(row, column, numColumns) {
     return row * numColumns + column;
@@ -55,15 +64,12 @@ class PointClass {
 
         let new_a = a
         
+        new_a = normalizeAngle(a)
         if (normflag){
-          
-          this.x =  this.x - cos(new_a);
-          this.y = this.y + Math.abs(sin(new_a));
-
-        }else{
-          this.x =  this.x - cos(new_a);
-          this.y = this.y + sin(new_a);
+          new_a = normalizeAngleRight(a)
         }
+        this.x =  this.x - cos(new_a);          
+        this.y = this.y + sin(new_a);
 
         
 
