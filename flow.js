@@ -149,7 +149,7 @@ function setup() {
     console.log(dataLoaded)
     if (!dataLoaded) {
         // If data is not loaded, wait for a certain time interval and check again
-        setTimeout(setup, 1);
+        setTimeout(setup, 100);
         return;
       }
     setupFlag=true;
@@ -194,9 +194,14 @@ function draw() {
 
 
 
+
+
 function onScreen(v) {
     return v.x >= 0 && v.x <= width && v.y >= 0 && v.y <= height;
   }
+
+
+
 
 
 // Access the button element
