@@ -30,7 +30,7 @@ function normalizeAngleRight(angle) {
 }
 
 function getIndex(row, column, numColumns) {
-    return row * numColumns + column;
+    return (row * numColumns) + column;
   }
   
   function getElementAtRowColumn(array, row, column, numColumns) {
@@ -52,14 +52,10 @@ class PointClass {
       this.x = p.x
       this.y = p.y
 
-      this.startTime = millis(); // Start time of the object's existence
-      this.lifetime = 100; // Lifetime duration in milliseconds
-      
+
     }
   
     update(a) {
-        let currentTime = millis();
-        let deltaTime = currentTime - this.startTime;
 
         
         this.x_prev = this.x
@@ -127,7 +123,6 @@ Promise.all([promise1, promise2])
     
     
     canvasHeight = formatedResponses[0].height
-
     canvasWidth = formatedResponses[0].width
     
     
@@ -156,12 +151,15 @@ function setup() {
         return;
       }
     setupFlag=true;
-    const density = 5;
-    createCanvas(canvasWidth, canvasHeight);
-    console.log(density)
+    const density = 3;
+    createCanvas(canvasWidth, canvasWidth);
+
+    console.log(canvasWidth)
+    
     pixelDensity(density);
+
     for(let i = 0; i < num; i ++) {
-        let particle = new PointClass(createVector(random(canvasWidth), random(canvasHeight)), canvasWidth, canvasHeight)
+        let particle = new PointClass(createVector(random(canvasHeight), random(canvasWidth)), canvasWidth, canvasHeight)
         particles.push(particle);
     }
     
@@ -175,6 +173,7 @@ function setup() {
 
 
 function draw() {
+    line(0, canvasHeight - 79, canvasWidth, canvasHeight - 79);
     if (!setupFlag){
         setTimeout(draw, 10);
         return;
@@ -195,15 +194,16 @@ function draw() {
     for(let i = 0; i < num; i++) {
 
         let p = particles[i];
-        let a = (getElementAtRowColumn(dipfield,parseInt(p.x),parseInt(p.y),width))
-        
-        
-        point(p.y,p.x)
+        let a = (getElementAtRowColumn(dipfield, parseInt(p.x), parseInt(p.y), canvasWidth))
+        point(p.y, p.x)
+
+
+
         p.update(a)
 
         if(!onScreen(p)) {
-            p.x = random(width);
-            p.y = random(height);
+            p.x = random(canvasWidth);
+            p.y = random(canvasHeight);
           }
         
       
@@ -213,7 +213,7 @@ function draw() {
 
 
 function onScreen(v) {
-    return v.x >= 0 && v.x <= width && v.y >= 0 && v.y <= height;
+    return v.x >= 0 && v.x <= canvasWidth && v.y >= 0 && v.y <= canvasHeight;
   }
 
 
@@ -254,6 +254,8 @@ seismicSwitch.addEventListener('change', function() {
     seismicFlag = false;
     // Perform actions for the OFF state
   }
+  setup();
+  draw();
 });
 
 
