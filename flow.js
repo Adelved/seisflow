@@ -7,14 +7,17 @@ let dipfield;
 
 
 let num = 5000;
-
 let stride = 1;
 
 
 dataLoaded = false;
 
-let setupFlag=false;
-let normflag = false;
+let setupFlag=false; //flag to ensure that everything is loaded
+
+
+let normflag = false; //toggle on/off left-right / inward flow
+
+let seismicFlag = false; //toggles on/off seismic underlay
 
 function normalizeAngle(angle) {
   angle += Math.PI
@@ -97,11 +100,11 @@ class PointClass {
   }
   
 
-
+let backgroundImage;
 
 function preload() {
 // Load necessary data asynchronously
-
+backgroundImage = loadImage('topseis.jpeg')
 metadata = 'metadata.json'
 vectors = 'dip_topseis.bin'
 
@@ -149,7 +152,7 @@ function setup() {
     console.log(dataLoaded)
     if (!dataLoaded) {
         // If data is not loaded, wait for a certain time interval and check again
-        setTimeout(setup, 100);
+        setTimeout(setup, 1);
         return;
       }
     setupFlag=true;
@@ -161,8 +164,11 @@ function setup() {
         let particle = new PointClass(createVector(random(canvasWidth), random(canvasHeight)), canvasWidth, canvasHeight)
         particles.push(particle);
     }
-    stroke(255)
+    
+    
 
+    
+    
     }
 
 
@@ -173,7 +179,19 @@ function draw() {
         setTimeout(draw, 10);
         return;
     }
-    background(0,10);
+
+    if (seismicFlag){
+      stroke(126,0,0)
+      image(backgroundImage,0,0)
+      tint(255,10)
+    }else{
+      stroke(255)
+      background(0,10)
+    }
+
+    //background(10);
+    
+
     for(let i = 0; i < num; i++) {
 
         let p = particles[i];
@@ -194,19 +212,15 @@ function draw() {
 
 
 
-
-
 function onScreen(v) {
     return v.x >= 0 && v.x <= width && v.y >= 0 && v.y <= height;
   }
 
 
-
-
-
 // Access the button element
 const buttonOrig = document.getElementById('buttonOrig');
 const buttonNorm = document.getElementById('buttonNorm');
+
 
 // Add an event listener to the button
 buttonOrig.addEventListener('click', function() {
@@ -227,6 +241,23 @@ buttonNorm.addEventListener('click', function() {
   draw();
 });
 
+
+const seismicSwitch = document.getElementById('toggleSeismic');
+
+seismicSwitch.addEventListener('change', function() {
+  if (this.checked) {
+    // Switch is turned on
+    seismicFlag = true;
+    // Perform actions for the ON state
+  } else {
+    // Switch is turned off
+    seismicFlag = false;
+    // Perform actions for the OFF state
+  }
+});
+
+
+toggleSeismic
 
 const slider = document.getElementById("slider");
 const sliderValue = document.getElementById("sliderValue");
