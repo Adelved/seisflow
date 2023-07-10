@@ -180,7 +180,7 @@ function draw() {
     }
 
     if (seismicFlag){
-      stroke(126,0,0)
+      stroke(251,72,150)
       image(backgroundImage,0,0)
       tint(255,10)
     }else{
