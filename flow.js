@@ -96,7 +96,7 @@ let backgroundImage;
 function preload() {
 
 // Load necessary data asynchronously
-let base = '/data/' + seispath + "/"
+let base = './data/' + seispath + "/"
 backgroundImage = loadImage(base + 'background.jpeg')
 metadata = base + 'metadata.json'
 vectors = base + 'dipfield.bin'
