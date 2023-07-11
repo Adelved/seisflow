@@ -9,14 +9,12 @@ let dipfield;
 let num = 5000;
 let stride = 1;
 
+let seispath = 'loppa';
+
 
 dataLoaded = false;
-
 let setupFlag=false; //flag to ensure that everything is loaded
-
-
-let normflag = false; //toggle on/off left-right / inward flow
-
+let normflag = true; //toggle on/off left-right / inward flow
 let seismicFlag = false; //toggles on/off seismic underlay
 
 function normalizeAngle(angle) {
@@ -33,10 +31,10 @@ function getIndex(row, column, numColumns) {
     return (row * numColumns) + column;
   }
   
-  function getElementAtRowColumn(array, row, column, numColumns) {
-    const index = getIndex(row, column, numColumns);
-    return array[index];
-  }
+function getElementAtRowColumn(array, row, column, numColumns) {
+  const index = getIndex(row, column, numColumns);
+  return array[index];
+}
 
 
 class PointClass {
@@ -67,17 +65,20 @@ class PointClass {
         if (normflag){
           new_a = normalizeAngleRight(a)
         }
-        this.x =  this.x - cos(new_a);          
-        this.y = this.y + sin(new_a);
+        this.x =  this.x + sin(new_a);        
+        this.y = this.y - cos(new_a);
 
         
-
-        if (Math.abs(this.x - this.x_prev) < .01 || Math.abs(this.y - this.y_prev) < .01){
+        /*
+        if (Math.abs(this.x - this.x_prev) < .001 || Math.abs(this.y - this.y_prev) < .001){
             
           this.x = random(this.width)
           this.y = random(this.height)
 
-      }
+        }
+        */
+
+        
 
         
 
@@ -100,9 +101,10 @@ let backgroundImage;
 
 function preload() {
 // Load necessary data asynchronously
-backgroundImage = loadImage('topseis.jpeg')
-metadata = 'metadata.json'
-vectors = 'dip_topseis.bin'
+let base = '/data/' + seispath + "/"
+backgroundImage = loadImage(base + 'background.jpeg')
+metadata = base + 'metadata.json'
+vectors = base + 'dipfield.bin'
 
 // Fetch both files
 const promise1 = fetch(metadata);
@@ -125,13 +127,14 @@ Promise.all([promise1, promise2])
     canvasHeight = formatedResponses[0].height
     canvasWidth = formatedResponses[0].width
     
-    
+    console.log("image size")
     console.log(canvasHeight,canvasWidth)
-    
+
+
+
     dipfield = new Float32Array(formatedResponses[1])
-    console.log(dipfield)
-    
     dataLoaded = true;
+
   })
   .catch(error => {
     console.error('Error:', error);
@@ -143,59 +146,76 @@ Promise.all([promise1, promise2])
 
 
 function setup() {   
-
-    console.log(dataLoaded)
+    
     if (!dataLoaded) {
         // If data is not loaded, wait for a certain time interval and check again
         setTimeout(setup, 1);
         return;
+    }
+
+    
+    if (dataLoaded){
+      setupFlag=true;
+      const density = 5;
+  
+      let cnv = createCanvas(canvasWidth, canvasHeight);
+      cnv.parent('canvasDiv')
+      
+      
+      
+      console.log("width,height")
+      console.log(canvasWidth, canvasHeight)
+      
+      pixelDensity(density);
+  
+      for(let i = 0; i < num; i ++) {
+          let particle = new PointClass(createVector(random(canvasWidth), random(canvasHeight)), canvasWidth, canvasHeight)
+          particles.push(particle);
       }
-    setupFlag=true;
-    const density = 3;
-    createCanvas(canvasWidth, canvasWidth);
+      
+      
 
-    console.log(canvasWidth)
-    
-    pixelDensity(density);
-
-    for(let i = 0; i < num; i ++) {
-        let particle = new PointClass(createVector(random(canvasHeight), random(canvasWidth)), canvasWidth, canvasHeight)
-        particles.push(particle);
-    }
-    
-    
-
-    
-    
     }
 
 
+    
+    
+}
 
+
+
+let strokeColor = '#FB48C4'
+let tintValue = 255
+let trailValue = 10
 
 function draw() {
-    line(0, canvasHeight - 79, canvasWidth, canvasHeight - 79);
+    
     if (!setupFlag){
-        setTimeout(draw, 10);
+        setTimeout(draw, 1);
         return;
     }
 
     if (seismicFlag){
-      stroke(251,72,150)
+      let c = color(strokeColor)
       image(backgroundImage,0,0)
-      tint(255,10)
+      stroke(c)
+      
+
+      tint(tintValue,trailValue);
+      
+      
     }else{
       stroke(255)
-      background(0,10)
+      background(0,trailValue)
     }
 
-    //background(10);
-    
+ 
 
     for(let i = 0; i < num; i++) {
 
         let p = particles[i];
-        let a = (getElementAtRowColumn(dipfield, parseInt(p.x), parseInt(p.y), canvasWidth))
-        point(p.y, p.x)
+        let a = (getElementAtRowColumn(dipfield,  parseInt(p.y), parseInt(p.x), canvasWidth))
+        point(p.x, p.y)
 
 
 
@@ -208,6 +228,7 @@ function draw() {
         
       
     }
+  
 }
 
 
@@ -217,41 +238,50 @@ function onScreen(v) {
   }
 
 
-// Access the button element
-const buttonOrig = document.getElementById('buttonOrig');
-const buttonNorm = document.getElementById('buttonNorm');
 
-
-// Add an event listener to the button
-buttonOrig.addEventListener('click', function() {
-  normflag = false;
-  buttonOrig.style.backgroundColor = "gray";
-  buttonNorm.style.backgroundColor = "#f0f0f0";
+  function mapRange(value) {
+    // Map the value from the range 0-100 % to the range 0-255
+    return ((100 - value)/100) * 255;
+  }
   
-  setup();
-  draw();
-});
+  const tintSlider = document.getElementById("tint-slider");
+  const tintSliderValue = document.getElementById("tint-value");
+  
+  tintSlider.addEventListener("input", function() {
+  
+    const selectedNotch = tintSlider.value;
+    tintValue = mapRange(tintSlider.value) 
+    
+    setup();
+    draw();
+  
+    tintSliderValue.textContent = `alpha: ${100 - selectedNotch} %`;
+  });
+  
 
-buttonNorm.addEventListener('click', function() {
-  normflag = true;
-  buttonOrig.style.backgroundColor = "#f0f0f0";
-  buttonNorm.style.backgroundColor = "gray";
+function toggleVisibility(element, mode){
+  element.style.display = mode
+}
+  
 
-  setup();
-  draw();
-});
+//toggle off tint-controls at start (no seismic to tint)
+const tintControls = document.getElementById('tint-group')
+toggleVisibility(tintControls,"none")
 
 
+
+//toggle seismic on/off
 const seismicSwitch = document.getElementById('toggleSeismic');
-
 seismicSwitch.addEventListener('change', function() {
   if (this.checked) {
     // Switch is turned on
     seismicFlag = true;
+    toggleVisibility(tintControls,"block")
     // Perform actions for the ON state
   } else {
     // Switch is turned off
     seismicFlag = false;
+    toggleVisibility(tintControls,"none")
     // Perform actions for the OFF state
   }
   setup();
@@ -259,17 +289,78 @@ seismicSwitch.addEventListener('change', function() {
 });
 
 
-toggleSeismic
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const slider = document.getElementById("slider");
 const sliderValue = document.getElementById("sliderValue");
-
 slider.addEventListener("input", function() {
-
   const selectedNotch = slider.value * 1000;
   num = selectedNotch
   setup();
   draw();
+  sliderValue.textContent = `Particles: ${selectedNotch}`;
+});
 
-  sliderValue.textContent = `Num Particles: ${selectedNotch}`;
+
+
+
+const seismicSelector = document.getElementById('seisButtons')
+
+function buttonToggle(buttons, activeName){
+  for (let i = 0; i < buttons.children.length; i++){
+    const child = buttons.children[i]
+    child.classList.remove('active')
+    if (activeName == String(child.id)){
+      child.classList.toggle('active')
+    }
+  }
+}
+
+
+buttonToggle(seismicSelector,seispath)
+
+for (let i = 0; i < seismicSelector.children.length; i++){
+  const child = seismicSelector.children[i]
+  
+  //toggle active state for button on/off based on current button (initial state)
+  
+  //toggles and loads the dataset if it is not already selected
+  child.addEventListener('click', function() {
+    if (seispath != String(child.id)){
+      seispath = String(child.id);
+      dataLoaded = false;
+      buttonToggle(seismicSelector,seispath)
+      preload();
+      setup();
+      draw();
+
+    }
+  });
+
+}
+
+
+const colorPicker = document.getElementById('strokecolor')
+colorPicker.value = strokeColor
+
+
+colorPicker.addEventListener("input", function() {
+  strokeColor = colorPicker.value
+  setup();
+  draw();
 });
