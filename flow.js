@@ -38,6 +38,9 @@ function getElementAtRowColumn(array, row, column, numColumns) {
 class PointClass {
     constructor(p, width, height) {
 
+      this.startTime = millis();
+      this.lifetime =  random(1000, 10000);
+
       this.width = width
       this.height = height
       
@@ -52,7 +55,6 @@ class PointClass {
     }
   
     update(a) {
-
         
         this.x_prev = this.x
         this.y_prev = this.y
@@ -67,6 +69,13 @@ class PointClass {
         this.y = this.y - cos(new_a);
 
         
+        if (millis() - this.startTime > this.lifetime){
+          this.x = random(this.width)
+          this.y = random(this.height)
+          this.startTime = millis();
+          this.lifetime =  random(1000, 10000);
+        }
+        
         /*
         if (Math.abs(this.x - this.x_prev) < .001 || Math.abs(this.y - this.y_prev) < .001){
             
@@ -76,19 +85,6 @@ class PointClass {
         }
         */
 
-        
-
-        
-
-        /*
-        if (deltaTime >= this.lifetime) {
-          
-
-
-            this.startTime = millis(); // Start time of the object's existence
-            this.lifetime = 100; // Lifetime duration in milliseconds
-        }
-        */
         
       }
     
