@@ -1,6 +1,5 @@
 let particles = [];
-let xpos = [];
-let ypos = [];
+
 let canvasHeight;
 let canvasWidth;
 let dipfield;
@@ -8,7 +7,6 @@ let dipfield;
 
 let num = 5000;
 let stride = 1;
-
 let seispath = 'loppa';
 
 
@@ -100,6 +98,7 @@ class PointClass {
 let backgroundImage;
 
 function preload() {
+
 // Load necessary data asynchronously
 let base = '/data/' + seispath + "/"
 backgroundImage = loadImage(base + 'background.jpeg')
@@ -134,6 +133,7 @@ Promise.all([promise1, promise2])
 
     dipfield = new Float32Array(formatedResponses[1])
     dataLoaded = true;
+    
 
   })
   .catch(error => {
@@ -147,9 +147,10 @@ Promise.all([promise1, promise2])
 
 function setup() {   
     
+    
     if (!dataLoaded) {
         // If data is not loaded, wait for a certain time interval and check again
-        setTimeout(setup, 1);
+        setTimeout(setup, 100);
         return;
     }
 
@@ -284,7 +285,6 @@ seismicSwitch.addEventListener('change', function() {
     toggleVisibility(tintControls,"none")
     // Perform actions for the OFF state
   }
-  setup();
   draw();
 });
 
@@ -344,7 +344,11 @@ for (let i = 0; i < seismicSelector.children.length; i++){
     if (seispath != String(child.id)){
       seispath = String(child.id);
       dataLoaded = false;
+      setupFlag = false;
+      
       buttonToggle(seismicSelector,seispath)
+      
+      
       preload();
       setup();
       draw();
