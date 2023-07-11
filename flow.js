@@ -9,7 +9,7 @@ let backgroundImage;
 let num = 5000;
 let stride = 1;
 let seispath = 'loppa';
-
+let density = 1;
 
 dataLoaded = false;
 let setupFlag=false; //flag to ensure that everything is loaded
@@ -153,7 +153,7 @@ function setup() {
     
     if (dataLoaded){
       setupFlag=true;
-      const density = 5;
+      
   
       let cnv = createCanvas(canvasWidth, canvasHeight);
       cnv.parent('canvasDiv')
@@ -254,7 +254,22 @@ function onScreen(v) {
   
     tintSliderValue.textContent = `alpha: ${100 - selectedNotch} %`;
   });
+
+
+const densitySlider = document.getElementById("pixelDensitySlider");
+const densityValue = document.getElementById("pixelDensityValue");
+
+densitySlider.addEventListener("input", function() {
+
+  const selectedNotch = densitySlider.value;
+  density = tintSlider.value;
   
+  setup();
+  draw();
+
+  densityValue.textContent = `Density: ${selectedNotch}`;
+});
+
 
 function toggleVisibility(element, mode){
   element.style.display = mode
