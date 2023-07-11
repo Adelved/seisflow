@@ -9,7 +9,14 @@ let backgroundImage;
 let num = 5000;
 let stride = 1;
 let seispath = 'loppa';
+let strokeColor = '#F3BEE3'
+
 let density = 1;
+
+let tintValue = 150
+let trailValue = 10
+
+let initFlag = false
 
 dataLoaded = false;
 let setupFlag=false; //flag to ensure that everything is loaded
@@ -179,12 +186,6 @@ function setup() {
     
 }
 
-
-
-let strokeColor = '#FB48C4'
-let tintValue = 255
-let trailValue = 10
-
 function draw() {
     
     if (!setupFlag){
@@ -240,24 +241,68 @@ function onScreen(v) {
     // Map the value from the range 0-100 % to the range 0-255
     return ((100 - value)/100) * 255;
   }
+
+
+
   
-  const tintSlider = document.getElementById("tint-slider");
-  const tintSliderValue = document.getElementById("tint-value");
-  
-  tintSlider.addEventListener("input", function() {
-  
-    const selectedNotch = tintSlider.value;
-    tintValue = mapRange(tintSlider.value) 
-    
-    setup();
-    draw();
-  
-    tintSliderValue.textContent = `alpha: ${100 - selectedNotch} %`;
-  });
+
+const tintControls = document.getElementById('tint-group')
+const tintSlider = document.getElementById("tint-slider");
+const tintSliderValue = document.getElementById("tint-value");
 
 
 const densitySlider = document.getElementById("pixelDensitySlider");
 const densityValue = document.getElementById("pixelDensityValue");
+  
+
+const slider = document.getElementById("slider");
+const sliderValue = document.getElementById("sliderValue");
+
+
+
+//initialize slider values
+function initValues(){
+  if(initFlag === false){
+  const notch = Math.round((tintValue / 255) * 100)
+  tintSlider.value = notch
+  tintSliderValue.textContent = `alpha: ${100 - notch} %`   
+  
+  densitySlider.value = 10
+  densityValue.textContent = `Density: ${densitySlider.value / 10}`;
+
+
+  slider.value = num / 1000
+  sliderValue.textContent = `Particles: ${slider.value * 1000}`;
+
+  initFlag = true;
+  }
+}
+
+
+
+function toggleVisibility(element, mode){
+  element.style.display = mode
+}
+  
+
+toggleVisibility(tintControls,"none")
+
+//toggle off tint-controls at start (no seismic to tint)
+
+
+  
+tintSlider.addEventListener("input", function() {
+
+  const selectedNotch = tintSlider.value;
+  tintValue = mapRange(tintSlider.value) 
+  
+  setup();
+  draw();
+
+  tintSliderValue.textContent = `alpha: ${100 - selectedNotch} %`;
+});
+
+
 
 densitySlider.addEventListener("input", function() {
 
@@ -271,14 +316,17 @@ densitySlider.addEventListener("input", function() {
 });
 
 
-function toggleVisibility(element, mode){
-  element.style.display = mode
-}
-  
 
-//toggle off tint-controls at start (no seismic to tint)
-const tintControls = document.getElementById('tint-group')
-toggleVisibility(tintControls,"none")
+
+slider.addEventListener("input", function() {
+  const selectedNotch = slider.value * 1000;
+  num = selectedNotch
+  setup();
+  draw();
+  sliderValue.textContent = `Particles: ${selectedNotch}`;
+});
+
+
 
 
 
@@ -315,17 +363,6 @@ seismicSwitch.addEventListener('change', function() {
 
 
 
-
-
-const slider = document.getElementById("slider");
-const sliderValue = document.getElementById("sliderValue");
-slider.addEventListener("input", function() {
-  const selectedNotch = slider.value * 1000;
-  num = selectedNotch
-  setup();
-  draw();
-  sliderValue.textContent = `Particles: ${selectedNotch}`;
-});
 
 
 
@@ -379,3 +416,6 @@ colorPicker.addEventListener("input", function() {
   setup();
   draw();
 });
+
+
+initValues()
