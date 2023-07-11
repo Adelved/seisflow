@@ -261,13 +261,13 @@ const densityValue = document.getElementById("pixelDensityValue");
 
 densitySlider.addEventListener("input", function() {
 
-  const selectedNotch = densitySlider.value;
-  density = tintSlider.value;
+  const selectedNotch = densitySlider.value ;
+  density = densitySlider.value / 10;
   
   setup();
   draw();
 
-  densityValue.textContent = `Density: ${selectedNotch}`;
+  densityValue.textContent = `Density: ${selectedNotch / 10}`;
 });
 
 
