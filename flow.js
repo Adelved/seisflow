@@ -372,45 +372,6 @@ slider.addEventListener("input", function() {
 
 
 
-
-
-//toggle seismic on/off
-const seismicSwitch = document.getElementById('toggleSeismic');
-seismicSwitch.addEventListener('change', function() {
-  if (this.checked) {
-    // Switch is turned on
-    seismicFlag = true;
-    toggleVisibility(tintControls,"block")
-    // Perform actions for the ON state
-  } else {
-    // Switch is turned off
-    seismicFlag = false;
-    toggleVisibility(tintControls,"none")
-    // Perform actions for the OFF state
-  }
-  draw();
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const seismicSelector = document.getElementById('seisButtons')
 
 function buttonToggle(buttons, activeName){
