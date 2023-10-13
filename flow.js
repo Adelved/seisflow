@@ -243,10 +243,52 @@ function onScreen(v) {
 
 
 
+<<<<<<< Updated upstream
   function mapRange(value) {
     // Map the value from the range 0-100 % to the range 0-255
     return ((100 - value)/100) * 255;
   }
+=======
+
+// Add an event listener to the button
+buttonOrig.addEventListener('click', function() {
+  normflag = false;
+  buttonOrig.style.backgroundColor = "gray";
+  buttonNorm.style.backgroundColor = "#f0f0f0";
+  
+  setup();
+  draw();
+});
+
+buttonNorm.addEventListener('click', function() {
+  normflag = true;
+  buttonOrig.style.backgroundColor = "#f0f0f0";
+  buttonNorm.style.backgroundColor = "gray";
+
+  setup();
+  draw();
+});
+
+
+const seismicSwitch = document.getElementById('toggleSeismic');
+
+seismicSwitch.addEventListener('change', function() {
+  if (this.checked) {
+    // Switch is turned on
+    seismicFlag = true;
+    // Perform actions for the ON state
+    setup();
+    draw();
+  } else {
+    // Switch is turned off
+    seismicFlag = false;
+    // Perform actions for the OFF state
+    setup();
+    draw();
+  }
+
+});
+>>>>>>> Stashed changes
 
 
 
