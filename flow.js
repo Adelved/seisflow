@@ -6,14 +6,15 @@ let dipfield;
 
 let backgroundImage;
 
-let num = 5000;
+let num = 2000;
+let maxlife = 20000
 let stride = 1;
 let seispath = 'loppa';
 let strokeColor = '#F3BEE3'
 
 let density = 1;
 
-let tintValue = 150
+let tintValue = 50
 let trailValue = 10
 
 let initFlag = false
@@ -47,7 +48,7 @@ class PointClass {
     constructor(p, width, height) {
 
       this.startTime = millis();
-      this.lifetime =  random(1000, 10000);
+      this.lifetime =  random(maxlife/2, maxlife);
 
       this.width = width
       this.height = height
@@ -81,8 +82,9 @@ class PointClass {
           this.x = random(this.width)
           this.y = random(this.height)
           this.startTime = millis();
-          this.lifetime =  random(1000, 10000);
+          this.lifetime =  random(maxlife/2, maxlife);
         }
+        
         
         /*
         if (Math.abs(this.x - this.x_prev) < .001 || Math.abs(this.y - this.y_prev) < .001){
@@ -189,20 +191,23 @@ function setup() {
 function draw() {
     
     if (!setupFlag){
-        setTimeout(draw, 1);
+        setTimeout(draw, 10);
         return;
     }
 
     if (seismicFlag){
+      strokeWeight(2)
       let c = color(strokeColor)
       image(backgroundImage,0,0)
       stroke(c)
+      
       
 
       tint(tintValue,trailValue);
       
       
     }else{
+      strokeWeight(1)
       stroke(255)
       background(0,trailValue)
     }
@@ -220,7 +225,8 @@ function draw() {
         p.update(a)
 
         if(!onScreen(p)) {
-            p.x = random(canvasWidth);
+            p.lifetime =  random(maxlife/2, maxlife);
+            p.x = 0
             p.y = random(canvasHeight);
           }
         
@@ -264,8 +270,8 @@ const sliderValue = document.getElementById("sliderValue");
 function initValues(){
   if(initFlag === false){
   const notch = Math.round((tintValue / 255) * 100)
-  tintSlider.value = notch
-  tintSliderValue.textContent = `alpha: ${100 - notch} %`   
+  tintSlider.value =  tintSlider.max - notch
+  tintSliderValue.textContent = `alpha: ${notch} %`   
   
   densitySlider.value = 10
   densityValue.textContent = `Density: ${densitySlider.value / 10}`;
