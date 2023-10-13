@@ -242,13 +242,10 @@ function onScreen(v) {
   }
 
 
-
-<<<<<<< Updated upstream
   function mapRange(value) {
     // Map the value from the range 0-100 % to the range 0-255
     return ((100 - value)/100) * 255;
   }
-=======
 
 // Add an event listener to the button
 buttonOrig.addEventListener('click', function() {
@@ -288,7 +285,6 @@ seismicSwitch.addEventListener('change', function() {
   }
 
 });
->>>>>>> Stashed changes
 
 
 
