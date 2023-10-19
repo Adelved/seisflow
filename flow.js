@@ -197,8 +197,6 @@ function draw() {
       let c = color(strokeColor)
       image(backgroundImage,0,0)
       stroke(c)
-      
-
       tint(tintValue,trailValue);
       
       
